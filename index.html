@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LINKr Prompting Companion</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="aurora aurora-one"></div>
+  <div class="aurora aurora-two"></div>
+  <div class="grid-shell"></div>
+
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">Static AI prompt command centre</p>
+      <h1>LINKr</h1>
+      <p class="lede">Shape polished prompts for image, video, design and correction workflows, then copy them into your favourite AI tool.</p>
+    </div>
+    <div class="status-panel glass-panel">
+      <span class="pulse-dot"></span>
+      <span>All data stays in this browser</span>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <nav class="side-nav glass-panel" aria-label="Main sections">
+      <button class="nav-button active" data-section="create">Create Prompt</button>
+      <button class="nav-button" data-section="rescue">Prompt Rescue</button>
+      <button class="nav-button" data-section="styles">Style Library</button>
+      <button class="nav-button" data-section="recipes">Saved Recipes</button>
+      <button class="nav-button" data-section="brands">Brand Kits</button>
+      <button class="nav-button" data-section="history">Prompt History</button>
+      <div class="nav-divider"></div>
+      <button class="nav-button secondary" id="exportData">Export JSON</button>
+      <label class="nav-button secondary file-button" for="importData">Import JSON</label>
+      <input id="importData" type="file" accept="application/json">
+    </nav>
+
+    <section class="content-panel">
+      <section class="section-view active" id="section-create">
+        <div class="section-heading">
+          <p class="eyebrow">Create Prompt</p>
+          <h2>Build a ready-to-copy prompt</h2>
+        </div>
+
+        <div class="two-column">
+          <form class="glass-panel form-panel" id="promptForm">
+            <label>
+              Output type
+              <select id="outputType"></select>
+            </label>
+
+            <label>
+              Target AI tool
+              <select id="targetTool"></select>
+            </label>
+
+            <label>
+              Subject or details
+              <textarea id="subjectDetails" rows="6" placeholder="Example: Transform this product photo into a luxury campaign image with clean reflections and premium lighting."></textarea>
+            </label>
+
+            <label>
+              Visual style
+              <select id="visualStyle"></select>
+            </label>
+
+            <label>
+              Fidelity level
+              <select id="fidelityLevel"></select>
+            </label>
+
+            <label>
+              Brand kit
+              <select id="brandKitSelect"></select>
+            </label>
+
+            <fieldset>
+              <legend>Prompt locks</legend>
+              <div class="toggle-grid" id="lockGrid"></div>
+            </fieldset>
+
+            <div class="inline-actions">
+              <button type="button" class="primary-button" id="generatePrompt">Generate Prompt</button>
+              <button type="reset" class="ghost-button">Clear</button>
+            </div>
+          </form>
+
+          <aside class="glass-panel preview-panel">
+            <div class="preview-topline">
+              <p class="eyebrow">Final output</p>
+              <span id="promptMeta">Ready</span>
+            </div>
+            <textarea id="promptPreview" class="prompt-preview" rows="16" aria-label="Generated prompt preview"></textarea>
+            <label class="compact-label">
+              Convert target
+              <select id="convertTool"></select>
+            </label>
+            <p class="toast" id="copyMessage" aria-live="polite"></p>
+            <div class="action-grid">
+              <button class="primary-button" id="copyPrompt">Copy Prompt</button>
+              <button class="ghost-button" id="regeneratePrompt">Regenerate</button>
+              <button class="ghost-button" id="shorterPrompt">Make Shorter</button>
+              <button class="ghost-button" id="detailedPrompt">Make More Detailed</button>
+              <button class="ghost-button" id="premiumPrompt">Make More Premium</button>
+              <button class="ghost-button" id="convertPrompt">Convert for Another AI Tool</button>
+              <button class="ghost-button" id="saveRecipe">Save Recipe</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section-view" id="section-rescue">
+        <div class="section-heading">
+          <p class="eyebrow">Prompt Rescue</p>
+          <h2>Correct an AI result without starting over</h2>
+        </div>
+
+        <div class="two-column">
+          <div class="glass-panel form-panel">
+            <label>
+              What went wrong?
+              <textarea id="rescueDetails" rows="7" placeholder="Example: The model changed the person's face and added objects that were not in the original image."></textarea>
+            </label>
+
+            <fieldset>
+              <legend>Failure options</legend>
+              <div class="toggle-grid" id="failureGrid"></div>
+            </fieldset>
+
+            <button class="primary-button" id="generateRescue">Generate Correction Prompt</button>
+          </div>
+
+          <aside class="glass-panel preview-panel">
+            <div class="preview-topline">
+              <p class="eyebrow">Correction output</p>
+              <span>Starts with required wording</span>
+            </div>
+            <textarea id="rescuePreview" class="prompt-preview" rows="14" aria-label="Correction prompt preview"></textarea>
+            <p class="toast" id="rescueCopyMessage" aria-live="polite"></p>
+            <div class="inline-actions">
+              <button class="primary-button" id="copyRescue">Copy Correction</button>
+              <button class="ghost-button" id="saveRescueHistory">Save to History</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section-view" id="section-styles">
+        <div class="section-heading">
+          <p class="eyebrow">Style Library</p>
+          <h2>Pick a visual direction</h2>
+        </div>
+        <div class="card-grid" id="styleCards"></div>
+      </section>
+
+      <section class="section-view" id="section-recipes">
+        <div class="section-heading">
+          <p class="eyebrow">Saved Recipes</p>
+          <h2>Reusable prompt setups</h2>
+        </div>
+        <div class="list-stack" id="recipeList"></div>
+      </section>
+
+      <section class="section-view" id="section-brands">
+        <div class="section-heading">
+          <p class="eyebrow">Brand Kits</p>
+          <h2>Save reusable brand direction</h2>
+        </div>
+
+        <div class="two-column">
+          <form class="glass-panel form-panel" id="brandForm">
+            <label>
+              Brand name
+              <input id="brandName" type="text" placeholder="Example: Luma Atelier">
+            </label>
+            <label>
+              Colours
+              <input id="brandColors" type="text" placeholder="Example: obsidian black, cyan glow, soft gold">
+            </label>
+            <label>
+              Tone
+              <input id="brandTone" type="text" placeholder="Example: premium, precise, calm, futuristic">
+            </label>
+            <label>
+              Audience
+              <input id="brandAudience" type="text" placeholder="Example: creative founders and design teams">
+            </label>
+            <label>
+              Visual rules
+              <textarea id="brandRules" rows="4" placeholder="Example: clean negative space, no clutter, realistic materials, high-end lighting."></textarea>
+            </label>
+            <label>
+              Forbidden terms or elements
+              <textarea id="brandForbidden" rows="3" placeholder="Example: no cartoon mascots, no cheap neon, no messy backgrounds."></textarea>
+            </label>
+            <button class="primary-button" type="submit">Save Brand Kit</button>
+          </form>
+
+          <div class="list-stack" id="brandList"></div>
+        </div>
+      </section>
+
+      <section class="section-view" id="section-history">
+        <div class="section-heading">
+          <p class="eyebrow">Prompt History</p>
+          <h2>Recently generated prompts</h2>
+        </div>
+        <div class="inline-actions history-tools">
+          <button class="ghost-button" id="clearHistory">Clear History</button>
+        </div>
+        <div class="list-stack" id="historyList"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>LINKr runs locally in your browser.</span>
+    <span>No accounts. No keys. No server.</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
